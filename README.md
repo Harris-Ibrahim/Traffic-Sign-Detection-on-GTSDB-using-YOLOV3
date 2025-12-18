@@ -7,6 +7,13 @@ pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu13
 ```
 - In case, there are problems with installing or running Pytorch then check their [instructions](https://pytorch.org/get-started/locally/).
 
+## GTSDB Dataset
+- Download the full GTSDB Dataset file named "FullIJCNN2013.zip" from [link](https://sid.erda.dk/public/archives/ff17dc924eba88d5d01a807357d6614c/published-archive.html)
+- Extract the FullIJCNN2013.zip to the root directory so that the structure is root_dir / FullIJCNN2013 / FullIJCNN2013 / Dataset files
+
+## Download original YOLO-V3 Weights 
+Download YOLOv3-608 weights for MS-COCO Dataset from [Link](https://data.pjreddie.com/files/yolov3.weights) and move the file to the root_dir / checkpoints. Save the weights to PyTorch format by running YOLOV3/model_with_weights.py.
+
 ## Built With
 Python, Pytorch
 
