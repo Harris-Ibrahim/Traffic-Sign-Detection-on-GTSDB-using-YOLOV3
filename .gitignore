@@ -1,0 +1,33 @@
+# ignore all files with the data directory
+data/*
+
+# ignore cache files
+__pycache__
+configuration.env
+tensorboard_logs
+PASCAL_VOC/*
+checkpoint1.pth.tar
+checkpoint2.pth.tar
+
+# ignore latex temp files
+*.aux
+*.log
+*.synctex.gz
+*.syntex
+*.toc
+*.blg
+*.fdb
+*.fls
+*.fdb_latexmk
+
+# ignore dataset
+GTSDB/*
+GTSDB_YOLO/*
+checkpoints/*
+GTSRB/*
+GTSRB_YOLO/*
+
+Method_3/Demo
+Method_3/Demo_Video
+GTSDB_YOLO.zip
+GTSRB_YOLO.zip
