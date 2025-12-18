@@ -27,7 +27,10 @@ checkpoints/*
 GTSRB/*
 GTSRB_YOLO/*
 FullIJCNN2013/FullIJCNN2013/*
+
+
 !FullIJCNN2013/FullIJCNN2013/.gitkeep
+!GTSDB_YOLO/.gitkeep
 
 Method_3/Demo
 Method_3/Demo_Video
