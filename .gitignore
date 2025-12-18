@@ -24,6 +24,7 @@ checkpoint2.pth.tar
 GTSDB/*
 GTSDB_YOLO/*
 checkpoints/*
+!checkpoints/.gitkeep
 GTSRB/*
 GTSRB_YOLO/*
 FullIJCNN2013/FullIJCNN2013/*
@@ -36,3 +37,5 @@ Method_3/Demo
 Method_3/Demo_Video
 GTSDB_YOLO.zip
 GTSRB_YOLO.zip
+
+FullIJCNN2013.zip
