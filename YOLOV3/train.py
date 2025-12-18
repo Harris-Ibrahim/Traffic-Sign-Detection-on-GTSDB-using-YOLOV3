@@ -1,27 +1,30 @@
 """
 Main file for training Yolo model on Pascal VOC and COCO dataset
 """
+import os 
+import sys
 
-import config
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(root_dir)
+
+import YOLOV3.config as config
 import torch
 import torch.optim as optim
 
-from model import YOLOv3
+from YOLOV3.model import YOLOv3
 from tqdm import tqdm
-from utils import (
+from YOLOV3.utils import (
     mean_average_precision,
-    cells_to_bboxes,
     get_evaluation_bboxes,
     save_checkpoint,
     load_checkpoint,
     check_class_accuracy,
-    get_loaders,
-    plot_couple_examples
 )
-from loss import YoloLoss
+from YOLOV3.loss import YoloLoss
+
+from YOLOV3.dataloader import get_loaders
 
 torch.backends.cudnn.benchmark = True
-
 
 def train_fn(train_loader, model, optimizer, loss_fn, scaler, scaled_anchors):
     loop = tqdm(train_loader, leave=True)
@@ -34,7 +37,7 @@ def train_fn(train_loader, model, optimizer, loss_fn, scaler, scaled_anchors):
             y[2].to(config.DEVICE),
         )
 
-        with torch.cuda.amp.autocast():
+        with torch.amp.autocast(device_type= config.DEVICE):
             out = model(x)
             loss = (
                 loss_fn(out[0], y0, scaled_anchors[0])
@@ -52,18 +55,16 @@ def train_fn(train_loader, model, optimizer, loss_fn, scaler, scaled_anchors):
         mean_loss = sum(losses) / len(losses)
         loop.set_postfix(loss=mean_loss)
 
-
-
 def main():
     model = YOLOv3(num_classes=config.NUM_CLASSES).to(config.DEVICE)
     optimizer = optim.Adam(
         model.parameters(), lr=config.LEARNING_RATE, weight_decay=config.WEIGHT_DECAY
     )
     loss_fn = YoloLoss()
-    scaler = torch.cuda.amp.GradScaler()
+    scaler = torch.amp.GradScaler()
 
     train_loader, test_loader, train_eval_loader = get_loaders(
-        train_csv_path=config.DATASET + "/train.csv", test_csv_path=config.DATASET + "/test.csv"
+        train_csv_path=config.DATASET + "//train.csv", test_csv_path=config.DATASET + "//test.csv"
     )
 
     if config.LOAD_MODEL:
@@ -83,11 +84,11 @@ def main():
         if config.SAVE_MODEL:
             save_checkpoint(model, optimizer, filename=f"checkpoint.pth.tar")
 
-        #print(f"Currently epoch {epoch}")
-        #print("On Train Eval loader:")
-        #check_class_accuracy(model, train_eval_loader, threshold=config.CONF_THRESHOLD)
-        #print("On Train loader:")
-        #check_class_accuracy(model, train_loader, threshold=config.CONF_THRESHOLD)
+        print(f"Currently epoch {epoch}")
+        print("On Train Eval loader:")
+        check_class_accuracy(model, train_eval_loader, threshold=config.CONF_THRESHOLD)
+        print("On Train loader:")
+        check_class_accuracy(model, train_loader, threshold=config.CONF_THRESHOLD)
 
         if epoch % 10 == 0 and epoch > 0:
             print("On Test loader:")

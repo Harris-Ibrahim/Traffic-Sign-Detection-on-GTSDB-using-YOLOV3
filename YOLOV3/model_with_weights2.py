@@ -4,11 +4,21 @@ Implementation of Yolo (v3) architecture
 paper (it's srsly hilarious):
 
 """
+import os
+import sys
+
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(root_dir)
 
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
+from YOLOV3.utils import save_checkpoint
+import YOLOV3.config as config
+
+
+
 
 """ 
 Information about architecture config:
@@ -255,16 +265,14 @@ class YOLOv3(nn.Module):
 if __name__ == "__main__":
 
     model = YOLOv3()
-    model.load_darknet_weights(weights_path="yolov31.weights")
-    model.layers[15].pred[1] = CNNBlock(1024, 25 * 3, bn_act=False, kernel_size=1)
-    model.layers[22].pred[1] = CNNBlock(512, 25 * 3, bn_act=False, kernel_size=1)
-    model.layers[29].pred[1] = CNNBlock(256, 25 * 3, bn_act=False, kernel_size=1)
+    model.load_darknet_weights(weights_path= os.path.join(root_dir, "checkpoints//yolov3.weights"))
+    # model.layers[15].pred[1] = CNNBlock(1024, 20 * 3, bn_act=False, kernel_size=1)
+    # model.layers[22].pred[1] = CNNBlock(512, 20 * 3, bn_act=False, kernel_size=1)
+    # model.layers[29].pred[1] = CNNBlock(256, 20 * 3, bn_act=False, kernel_size=1)
     optimizer = optim.Adam(model.parameters(), lr=1e-4)
-    from utils import save_checkpoint
+
 
     checkpoint = {"state_dict": model.state_dict(), "optimizer": optimizer.state_dict()}
-    save_checkpoint(checkpoint)
-
-    import sys
+    save_checkpoint(model= model, optimizer= optimizer, filename= os.path.join(root_dir, "checkpoints//YOLOV3_MSCOCO_Orignal.pth.tar"))
 
     sys.exit()

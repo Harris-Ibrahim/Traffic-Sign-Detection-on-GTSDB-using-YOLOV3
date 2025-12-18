@@ -7,7 +7,13 @@ import random
 import torch
 import torch.nn as nn
 
-from utils import intersection_over_union
+import os 
+import sys
+
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(root_dir)
+
+from YOLOV3.utils import intersection_over_union
 
 
 class YoloLoss(nn.Module):
