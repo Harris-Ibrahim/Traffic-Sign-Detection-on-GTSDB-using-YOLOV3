@@ -1,3 +1,13 @@
+# Traffic Sign Detection on GTSDB using YOLOV3
+Traffic signs encode important information about road conditions. Detecting traffic signs is therefore a critical component of modern Advanced Driver Assistance Systems (ADAS) and Autonomous Driving. These detections must be performed in all weather and road conditions with high precision, high recall and in real time. In this project, we develop a 2D traffic sign detector by adapting the YOLO-v3 object detector on the German Traffic Sign Detection Benchmark. We achieved a 91 percent mean Average Precision (mAP) after finetuning the YOLO-v3 model previously trained on the MS COCO dataset when detecting traffic signs of 4 general categories. We acheived a 14 percent mAP when detecting all 43 classes. Improvements to the training process, model architecture and dataset are required to achieve better results. 
+
+
+## Dataset : German Traffic Sign Detection Benchmark (GTSDB) [1]
+
+
+
+
+
 ## Setting up environment
 - Set up a Python 3.12 environment. Python 3.12[Miniconda Distribution](https://www.anaconda.com/download)
 - Install the required packages by using pip and the provided requirements.txt file
