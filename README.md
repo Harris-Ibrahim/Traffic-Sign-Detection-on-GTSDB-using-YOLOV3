@@ -29,10 +29,25 @@ We used the pre-trained weights of YOLO-V3 MS-COCO from the orignal authors. The
 After initializing a model with these pretrained weights, we train for 100 epochs on the training set of GTSDB on a learning rate of 1e4. After thaat, we train for a further 100 epochs using a learning rate of 1e5. We then test the performance on the test set
 
 ## Results
-We obtained a mAP of 91 percent while predicting 
+### Average Precision Per Class
+Precision and recall curves for each class are calculated. The area under the curve gives us the Average Precision (AP) for each class. The AP for each class is reasonablly good. The trained model performs the worst on "Other". This class consists of an assortment of traffic signs that cannot be neatly grouped in the rest of categories. Many of these only have only a dozen or less samples in the dataset. ![Average Precision per Class](assets/average_precision_bar_chart_page.jpg)
+
+### Overall Mean Average Precision (mAP)
+We obtained a mAP of 91 percent while detecting 04 classes with only 600 training images. The mAP drops to just 11 percent while detecting all 43 classes. This is likely because some classes have a dozen or less samples
+
+| Model                   | Problem                     | mAP @ 50 IoU |
+| ----------------------- |:---------------------------:|:------------:|
+| YOLOv3 	                | GTSDB (4 Super classes only)| 91           |
+| YOLOv3                  | GTSDB (All 43 Classes)      | 11           |
 
 ### Effect of Better Anchor boxes:
 Initially, we used the anchor box dimensions obtained by clustering analysis on MS-COCO as reported by the Authors of YOLO-V3. We then use the anchor box dimensions reported by [5] who did clustering analysis on GTSDB and reported the recommended anchor box dimensions. We observed that using better anchors, while keeping everything else constant, improved training and resulted in a **3 percent increase in mAP**.
+
+### Sample Predictions:
+Even with only 600 training images, the model is very good at correctly localising and detecting most traffic signs. A weakness is correctly classifying some signs, especially those belonging to the "Other" class. ![Sample Predictions](assets/model_predictions.png)
+### Common Mistakes:
+Just like other traffic sign detector, a common problem is incorrectly detecting many common road object as traffic signs. For example, some car tail lights are detected as traffic signs. Makeshift road barriers with red and white stripes are also incorrectly detected. Finally solar glare and reflections are also many time incorrectly detected as a traffic sign. Some traffic signs, such as advertisements and bus stop signs are also confused with traffic signs. ![Incorrect Predictions](assets/model_mistakes.png)
+
 
 ## Setting up environment
 - Set up a Python 3.12 environment. Python 3.12 [Miniconda Distribution](https://www.anaconda.com/download)
