@@ -1,6 +1,9 @@
 # Traffic Sign Detection on GTSDB using YOLOV3
 Traffic signs encode important information about road conditions. Detecting traffic signs is therefore a critical component of modern Advanced Driver Assistance Systems (ADAS) and Autonomous Driving. These detections must be performed in all weather and road conditions with high precision, high recall and in real time. In this project, we develop a 2D traffic sign detector by adapting the YOLO-v3 object detector on the German Traffic Sign Detection Benchmark. We achieved a 91 percent mean Average Precision (mAP) after finetuning the YOLO-v3 model previously trained on the MS COCO dataset when detecting traffic signs of 4 general categories. We acheived a 14 percent mAP when detecting all 43 classes. Improvements to the training process, model architecture and dataset are required to achieve better results. 
 
+https://github.com/user-attachments/assets/909898f6-8856-4efa-9088-5e71cc7ed759
+
+
 ## Methods
 ### Dataset : German Traffic Sign Detection Benchmark (GTSDB) [2]
 The dataset consists of 900 images containing road scenes with traffic signs. Each image includes one or more instances of traffic signs in a diverse range of weather, lighting, occlusion conditions and distances to the camera. The first 600 images are reserved for training, the later 300 are for testing. The annotations consist of 2D bounding box coordinates of each traffic sign in the scene with the corresponding class. There are a total of 43 classes of traffic signs. The original benchmark groups these 43 classes into 4 superclasses. The following image is from [6].![Dataset Categories](assets/traffic_sign_catogries_gtsdb.png)
