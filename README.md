@@ -3,16 +3,17 @@ Traffic signs encode important information about road conditions. Detecting traf
 
 ## Methods
 ### Dataset : German Traffic Sign Detection Benchmark (GTSDB) [2]
-The dataset consists of 900 images containing road scenes with traffic signs. Each image includes one or more instances of traffic signs in a diverse range of weather, lighting, occlusion conditions and distances to the camera. The first 600 images are reserved for training, the later 300 are for testing. The annotations consist of 2D bounding box coordinates of each traffic sign in the scene with the corresponding class. There are a total of 43 classes of traffic signs. The original benchmark groups these 43 classes into 4 superclasses. We train to predict only among these 4 superclasses. Following are some sample images from the dataset along with the bounding box, class labels and a dummy confidence score. The dataset format is converted to a compatible form. ![Dataset Samples](assets/dataset_samples.png)
+The dataset consists of 900 images containing road scenes with traffic signs. Each image includes one or more instances of traffic signs in a diverse range of weather, lighting, occlusion conditions and distances to the camera. The first 600 images are reserved for training, the later 300 are for testing. The annotations consist of 2D bounding box coordinates of each traffic sign in the scene with the corresponding class. There are a total of 43 classes of traffic signs. The original benchmark groups these 43 classes into 4 superclasses. The following image is from [6].![Dataset Categories](assets/traffic_sign_catogries_gtsdb.png)
+
+We train to predict only among these 4 superclasses. Following are some sample images from the dataset along with the bounding box, class labels and a dummy confidence score. The dataset format is converted to a compatible form. ![Dataset Samples](assets/dataset_samples.png)
 
 ### Model Architecture
-YOLO-V3 [3] is a general purpose object detector. The backbone of the network is a 53-layer CNN named Darknet-53. The extracted features of the backbone are then passed to the detection heads at three different scales. This is inspired by Feature Pyramid Networks. The three detection heads generate bounding box predictions at three different resolution. We made no changes to the architecture and used a Pytorch implementention by [4]
+YOLO-V3 [3] is a general purpose object detector. The backbone of the network is a 53-layer CNN named Darknet-53. The extracted features of the backbone are then passed to the detection heads at three different scales. This is inspired by Feature Pyramid Networks. The three detection heads generate bounding box predictions at three different resolution. We made no changes to the architecture and used a Pytorch implementention by [1]
 
 Our motivations for using YOLO-v3 instead of later versions are that it is fast at inference time, relatively simple to implement from scratch and requires less compute at training time. Due to the limitations of the dataset, GPU compute and time, we use YOLO-v3. 
 
 ### Evaluation Criteria
 In scientific literature on traffic sign detection and generally object detection, mean Average Precision (mAP) is used to evaluate the performance of object detectors. We used the mean Average Precision @ 50 criteria as used in Pascal VOC 2007 dataset
-
 
 ### Data Augmentation
  We used data augmentation strategies like random crop, colour jitter (randomly change brightness, contrast, hue, saturation), affine transformation (change zoom level, translate left and right, rotate, and shear), horizontal flip, random blurring, colour channel shuffling, and grey scale. All these were applied with various probabilities. Finally, the images are standardized (mean 0, std 1). These transforms are also applied to the bounding box labels. 
@@ -45,25 +46,44 @@ Initially, we used the anchor box dimensions obtained by clustering analysis on 
 
 ### Sample Predictions:
 Even with only 600 training images, the model is very good at correctly localising and detecting most traffic signs. A weakness is correctly classifying some signs, especially those belonging to the "Other" class. ![Sample Predictions](assets/model_predictions.png)
+
 ### Common Mistakes:
-Just like other traffic sign detector, a common problem is incorrectly detecting many common road object as traffic signs. For example, some car tail lights are detected as traffic signs. Makeshift road barriers with red and white stripes are also incorrectly detected. Finally solar glare and reflections are also many time incorrectly detected as a traffic sign. Some traffic signs, such as advertisements and bus stop signs are also confused with traffic signs. ![Incorrect Predictions](assets/model_mistakes.png)
+Just like other traffic sign detector, a common problem is incorrectly detecting many common road objects as traffic signs. For example, some car tail lights are detected as traffic signs. Makeshift road barriers with red and white stripes are also incorrectly detected. Finally solar glare and reflections are also many time incorrectly detected as a traffic sign. Some traffic signs, such as advertisements and bus stop signs are also confused with traffic signs. ![Incorrect Predictions](assets/model_mistakes.png)
 
+### Comparison with the State of the Art
+There are State of the Art architectures which have 09 percent better mAP precision. Still YOLO-V3 has above 90 percent mAP while requiring far less compute at test and training time than many competing methods.
 
-## Setting up environment
+| Paper | Architecture | Mean Average Precision |
+|------|-------------|------------------------|
+| Zheng et al. [7] | Vision Transformer | 98.7 |
+| Hamed Aghdam et al. [8] | Sliding Window CNN | 99.8 |
+| Alvaro Arcos-Garcia et al. [9] | Faster R-CNN | 95.8 |
+| Yawar Rehman et al. [10] | Custom YOLO-V3 | 93.1 |
+| **This work** | Base YOLO-V3 | 91.1 |
+
+## Reproducing Results
+### Setting up environment
 - Set up a Python 3.12 environment. Python 3.12 [Miniconda Distribution](https://www.anaconda.com/download)
 - Install the required packages by using pip and the provided requirements.txt file
 - Install Pytorch with Cuda 13.0 using the following command:
 ```
 pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu130
 ```
-- In case, there are problems with installing or running Pytorch then check their [instructions](https://pytorch.org/get-started/locally/).
+- In case, there are problems with installing or running Pytorch or you want some other version of Pytorch then check their [instructions](https://pytorch.org/get-started/locally/).
 
-## GTSDB Dataset
+### GTSDB Dataset
 - Download the full GTSDB Dataset file named "FullIJCNN2013.zip" from [link](https://sid.erda.dk/public/archives/ff17dc924eba88d5d01a807357d6614c/published-archive.html)
 - Extract the FullIJCNN2013.zip to the root directory so that the structure is root_dir / FullIJCNN2013 / FullIJCNN2013 / Dataset files
 
-## Download original YOLO-V3 Weights 
+### Download original YOLO-V3 Weights 
 Download YOLOv3-608 weights for MS-COCO Dataset from [Link](https://data.pjreddie.com/files/yolov3.weights) and move the file to the root_dir / checkpoints. Save the weights to PyTorch format by running YOLOV3/model_with_weights.py.
+
+### Convert GTSDB to a Compatible Format
+Run the script file Main / GTSDB_Conversion.py to convert the GTSDB dataset files into a format compatible with the project
+
+### Training and Evaluation
+- Run the notebook Main / Main_GTSDB_V3.ipynb to create datasets, dataloaders, model objects and then train them and evaluate them on the dataset
+- Edit the YOLOV3 / config.py to change experimental setup as necessary
 
 ## Built With
 Python, Pytorch
@@ -101,4 +121,71 @@ Python, Pytorch
     title = {A Real-time Traffic Sign Detection Model Based on Improved YOLOv3},
     journal = {IOP Conference Series: Materials Science and Engineering},
     }
+
+1. GTSDB Superclasses 
+@Article{yolov4_gtsdb,
+AUTHOR = {Gu, Yang and Si, Bingfeng},
+TITLE = {A Novel Lightweight Real-Time Traffic Sign Detection Integration Framework Based on YOLOv4},
+JOURNAL = {Entropy},
+VOLUME = {24},
+YEAR = {2022},
+NUMBER = {4},
+ARTICLE-NUMBER = {487},
+DOI = {10.3390/e24040487},
+}
+
+1. Vision Transformer
+@article{vision_transformer,
+author = {Zheng, Yuping and Jiang, Weiwei},
+title = {Evaluation of Vision Transformers for Traffic Sign Classification},
+journal = {Wireless Communications and Mobile Computing},
+volume = {2022},
+number = {1},
+pages = {3041117},
+doi = {https://doi.org/10.1155/2022/3041117},
+url = {https://onlinelibrary.wiley.com/doi/abs/10.1155/2022/3041117},
+eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1155/2022/3041117},
+year = {2022}
+}
+
+1. Sliding Window CNN
+@article{gtsdb_rank2_sliding_window_CNN,
+title = {A practical approach for detection and classification of traffic signs using Convolutional Neural Networks},
+journal = {Robotics and Autonomous Systems},
+volume = {84},
+pages = {97-112},
+year = {2016},
+issn = {0921-8890},
+doi = {https://doi.org/10.1016/j.robot.2016.07.003},
+url = {https://www.sciencedirect.com/science/article/pii/S092188901530316X},
+author = {Hamed {Habibi Aghdam} and Elnaz {Jahani Heravi} and Domenec Puig},
+keywords = {Convolutional Neural Networks, Traffic sign detection, Traffic sign classification, Sliding window detection, Dense prediction}
+}
+
+1. Fast RCNN
+@article{gtsdb_rank1_fasterrcnn,
+title = {Evaluation of deep neural networks for traffic sign detection systems},
+journal = {Neurocomputing},
+volume = {316},
+pages = {332-344},
+year = {2018},
+issn = {0925-2312},
+doi = {https://doi.org/10.1016/j.neucom.2018.08.009},
+url = {https://www.sciencedirect.com/science/article/pii/S092523121830924X},
+author = {Álvaro Arcos-García and Juan A. Álvarez-García and Luis M. Soria-Morillo},}
+}
+
+1. Custom YOLOV3
+@Article{gtsdb_rank2_Custom_yolov3,
+AUTHOR = {Rehman, Yawar and Amanullah, Hafsa and Saqib Bhatti, Dost Muhammad and Toor, Waqas Tariq and Ahmad, Muhammad and Mazzara, Manuel},
+TITLE = {Detection of Small Size Traffic Signs Using Regressive Anchor Box Selection and DBL Layer Tweaking in YOLOv3},
+JOURNAL = {Applied Sciences},
+VOLUME = {11},
+YEAR = {2021},
+NUMBER = {23},
+ARTICLE-NUMBER = {11555},
+URL = {https://www.mdpi.com/2076-3417/11/23/11555},
+ISSN = {2076-3417},
+DOI = {10.3390/app112311555}
+}
 
