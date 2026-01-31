@@ -92,7 +92,7 @@ Run the script file Main / GTSDB_Conversion.py to convert the GTSDB dataset file
 Python, Pytorch
 
 ## References
-1. Demo video has been created by generating predictions on high quality raw footage by 
+1. Demo video has been created by generating predictions on high quality raw footage by [Planet Drive](https://www.youtube.com/@PlanetDrive)
 
 1. German Traffic Sign Detection Benchmark :
 @inproceedings{Houben-IJCNN-2013,
